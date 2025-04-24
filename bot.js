@@ -1,15 +1,16 @@
 const { Telegraf } = require("telegraf");
 const mysql = require("mysql2");
+require("dotenv").config(); // .env faylni chaqirish
 
-// Tokenni o'zinki bilan almashtir
+// Telegram bot tokeni
 const bot = new Telegraf("8007544404:AAFiiMRgx8cLRfd22S4l39m9XMqNXFfsY2E");
 
-// MySQL ulanish
+// MySQL ulanishi .env dan olingan
 const pool = mysql.createPool({
-  host: "localhost",
-  user: "root",
-  password: "akbarali06",
-  database: "user_info",
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
@@ -22,13 +23,11 @@ bot.start(async (ctx) => {
   const username = ctx.from.username || "";
 
   try {
-    // Foydalanuvchi bazada bormi?
     const [rows] = await pool
       .promise()
       .query("SELECT * FROM users WHERE user_id = ?", [userId]);
 
     if (rows.length === 0) {
-      // Yo'q bo‘lsa, qo‘shamiz
       await pool
         .promise()
         .query(
@@ -38,16 +37,15 @@ bot.start(async (ctx) => {
     }
 
     ctx.reply(
-      `Salom, ${firstName}! \nSizning ID: ${userId} \nUsername: @${username}`
+      `Salom, ${firstName}!\nSizning ID: ${userId}\nUsername: @${username}`
     );
   } catch (err) {
     console.error(err);
-    ctx.reply(
-       `Salom, ${firstName}! \nSizning ID: ${userId} \nUsername: @${username}`
-    );
+    ctx.reply("Xatolik yuz berdi!");
   }
 });
 
+// Boshqa textlar uchun handler
 bot.on("text", async (ctx) => {
   const userId = ctx.from.id;
   const firstName = ctx.from.first_name;
