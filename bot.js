@@ -43,7 +43,7 @@ bot.start(async (ctx) => {
   } catch (err) {
     console.error(err);
     ctx.reply(
-      `Salom, ${firstName}! \nSizning ID: ${userId} \nUsername: @${username}`
+      "Hatolik yuz berdi"
     );
   }
 });
