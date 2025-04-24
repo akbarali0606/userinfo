@@ -2,7 +2,7 @@ const { Telegraf } = require("telegraf");
 const mysql = require("mysql2");
 
 // Tokenni o'zinki bilan almashtir
-const bot = new Telegraf("8097921532:AAEyR2j1cwnEs7gadeBcux5tPT5Zpvi8IF4");
+const bot = new Telegraf("8007544404:AAFiiMRgx8cLRfd22S4l39m9XMqNXFfsY2E");
 require("dotenv").config();
 
 const pool = mysql.createPool({
