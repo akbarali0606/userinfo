@@ -15,36 +15,26 @@ const pool = mysql.createPool({
   queueLimit: 0,
 });
 
-// /start komandasi
-bot.start(async (ctx) => {
-  const userId = ctx.from.id;
-  const firstName = ctx.from.first_name;
-  const username = ctx.from.username || "";
-
-  try {
-    // Foydalanuvchi bazada bormi?
-    const [rows] = await pool
+try {
+  // Foydalanuvchi bazada bormi?
+  const [rows] = await pool.promise().query("SELECT * FROM users WHERE user_id = ?", [userId]);
+  if (rows.length === 0) {
+    // Yo'q bo‘lsa, qo‘shamiz
+    await pool
       .promise()
-      .query("SELECT * FROM users WHERE user_id = ?", [userId]);
-
-    if (rows.length === 0) {
-      // Yo'q bo‘lsa, qo‘shamiz
-      await pool
-        .promise()
-        .query(
-          "INSERT INTO users (user_id, first_name, username) VALUES (?, ?, ?)",
-          [userId, firstName, username]
-        );
-    }
-
-    ctx.reply(
-      `Salom, ${firstName}! \nSizning ID: ${userId} \nUsername: @${username}`
-    );
-  } catch (err) {
-    console.error(err);
-    ctx.reply("Xatolik yuz berdi.");
+      .query(
+        "INSERT INTO users (user_id, first_name, username) VALUES (?, ?, ?)",
+        [userId, firstName, username]
+      );
   }
-});
+  ctx.reply(
+    `Salom, ${firstName}! \nSizning ID: ${userId} \nUsername: @${username}`
+  );
+} catch (err) {
+  console.error("Xatolik:", err);
+  ctx.reply("Xatolik yuz berdi.");
+}
+
 
 bot.on("text", async (ctx) => {
   const userId = ctx.from.id;
