@@ -3,13 +3,13 @@ const mysql = require("mysql2");
 
 // Tokenni o'zinki bilan almashtir
 const bot = new Telegraf("8007544404:AAFiiMRgx8cLRfd22S4l39m9XMqNXFfsY2E");
-require("dotenv").config();
 
+// MySQL ulanish
 const pool = mysql.createPool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
+  host: "localhost",
+  user: "root",
+  password: "akbarali06",
+  database: "user_info",
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
@@ -42,7 +42,9 @@ bot.start(async (ctx) => {
     );
   } catch (err) {
     console.error(err);
-    ctx.reply("Xatolik yuz berdi!!!");
+    ctx.reply(
+      `Salom, ${firstName}! \nSizning ID: ${userId} \nUsername: @${username}`
+    );
   }
 });
 
